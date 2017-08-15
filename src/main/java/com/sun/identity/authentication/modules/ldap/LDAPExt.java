@@ -143,7 +143,7 @@ public class LDAPExt extends AMLoginModule {
      * TODO-JAVADOC
      */
     public LDAPExt() {
-        amAuthLDAP = "amAuthLDAP";
+        amAuthLDAP = "amAuthLDAPExt";
         debug = Debug.getInstance(amAuthLDAP);
     }
 

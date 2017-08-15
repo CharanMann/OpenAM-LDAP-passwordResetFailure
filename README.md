@@ -1,7 +1,7 @@
-# OpenAM-HOTP-Extended
+# OpenAM-LDAP-passwordResetFailure
 
 * OpenAM LDAP Extensions - OpenAM Custom Auth Module <br />
-* Returns error message in case "Password needs to reset"
+* Returns error message in case "Password reset" use case 
  
 Disclaimer of Liability :
 =========================
@@ -30,82 +30,36 @@ Pre-requisites :
 OpenAM Configuration:
 =====================
 1. Build the custom auth module by using maven. 
-2. Deploy the custom auth module. Refer instructions: *[Building and Installing Custom Authentication Modules](https://backstage.forgerock.com/docs/openam/13.5/dev-guide#build-config-sample-auth-module)*
+2. Deploy the custom auth module. Refer instructions: *[Building and Installing Custom Authentication Modules](https://backstage.forgerock.com/docs/am/5.1/authentication-guide/#build-config-sample-auth-module)*
 ```
-Register service and module: Note that for OpenAM v12 use amAuthHOTPExt-12.xml
-$ ./ssoadm create-svc --adminid amadmin --password-file /tmp/pwd.txt --xmlfile ~/softwares/amAuthHOTPExt.xml
-$ ./ssoadm register-auth-module --adminid amadmin --password-file /tmp/pwd.txt --authmodule com.sun.identity.authentication.modules.hotp.HOTPExt
+Register service and module:
+$ ./ssoadm create-svc --adminid amadmin --password-file /tmp/pwd.txt --xmlfile ~/softwares/amAuthLDAPExt.xml
+$ ./ssoadm register-auth-module --adminid amadmin --password-file /tmp/pwd.txt --authmodule com.sun.identity.authentication.modules.ldap.LDAPExt
 
 UnRegister service and module (in case module needs to be uninstalled) : 
-$ ./ssoadm unregister-auth-module --adminid amadmin --password-file /tmp/pwd.txt --authmodule com.sun.identity.authentication.modules.hotp.HOTPExt
-$ ./ssoadm delete-svc --adminid amadmin --password-file /tmp/pwd.txt -s sunAMAuthHOTPExtService
+$ ./ssoadm unregister-auth-module --adminid amadmin --password-file /tmp/pwd.txt --authmodule com.sun.identity.authentication.modules.ldap.LDAPExt
+$ ./ssoadm delete-svc --adminid amadmin --password-file /tmp/pwd.txt -s iPlanetAMAuthLDAPExtService
 ```
-3. Configure the custom auth module. Refer instructions: *[Configuring and Testing Custom Authentication Modules](https://backstage.forgerock.com/docs/openam/13.5/dev-guide#configuring-testing-sample-auth-module)*
-4. Configure HOTPExt module with required SMTP server. Enable both SMS and EMail.
-5. Create a chain(otpChain) with (LDAP:Required, HOTPExt:Required). Set this chain as default for "Organization Authentication"
+3. Configure the custom auth module. Refer instructions: *[Configuring and Testing Custom Authentication Modules](https://backstage.forgerock.com/docs/am/5.1/authentication-guide/#configuring-testing-sample-auth-module)*
+4. Configure LDAPExt module with required parameters.
+5. Create a chain(ldapExt) with (LDAPExt:Required).
+6. Enable "force-change-on-reset" feature in DJ as explained here: *[Forcing users to reset password on next login](http://tumy-tech.com/2015/08/23/openam-forcing-user-to-reset-password-on-next-login-2/)*
   
 Testing:
 ======== 
-* Authentication testing for otpChain:
+* ROPC testing for ldapExt:
+1. Change user's password via AM admin console. 
+2. Test ROPC grant flow for ldapExt chain
 ```
-curl -X POST -H "Content-Type: application/json" -H "X-OpenAM-Username: testUser1" -H "X-OpenAM-Password: password" "http://openam.sample.com/openam/json/employees/authenticate"
+curl -X POST \
+  http://openam51.example.com:8282/openam/oauth2/employees/access_token \
+  -H 'authorization: BASIC bXlPQXV0aDJDbGllbnQ6cGFzc3dvcmQ=' \
+  -H 'content-type: application/x-www-form-urlencoded' \
+  -d 'grant_type=password&username=testuser1&password=password&scope=openid%20profile%20email&auth_chain=ldapExt'
 
 {
-  "authId": "eyAid..",
-  "template": "",
-  "stage": "HOTPExt2",
-  "header": "Please enter your One Time Password sent at Email testUser1@gmail.com and Phone: 2223334444",
-  "callbacks": [
-    {
-      "type": "PasswordCallback",
-      "output": [
-        {
-          "name": "prompt",
-          "value": "Enter OTP"
-        }
-      ],
-      "input": [
-        {
-          "name": "IDToken1",
-          "value": ""
-        }
-      ]
-    },
-    {
-      "type": "ConfirmationCallback",
-      "output": [
-        {
-          "name": "prompt",
-          "value": ""
-        },
-        {
-          "name": "messageType",
-          "value": 0
-        },
-        {
-          "name": "options",
-          "value": [
-            "Submit OTP",
-            "Request OTP"
-          ]
-        },
-        {
-          "name": "optionType",
-          "value": -1
-        },
-        {
-          "name": "defaultOption",
-          "value": 0
-        }
-      ],
-      "input": [
-        {
-          "name": "IDToken2",
-          "value": 0
-        }
-      ]
-    }
-  ]
+    "error": "invalid_grant",
+    "error_description": "Password must be reset. Please navigate to <Password Reset URL>."
 }
 ```
 
