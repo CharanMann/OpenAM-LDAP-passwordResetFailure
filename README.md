@@ -43,7 +43,8 @@ $ ./ssoadm delete-svc --adminid amadmin --password-file /tmp/pwd.txt -s iPlanetA
 3. Configure the custom auth module. Refer instructions: *[Configuring and Testing Custom Authentication Modules](https://backstage.forgerock.com/docs/am/5.1/authentication-guide/#configuring-testing-sample-auth-module)*
 4. Configure LDAPExt module with required parameters.
 5. Create a chain(ldapExt) with (LDAPExt:Required).
-6. Enable "force-change-on-reset" feature in DJ as explained here: *[Forcing users to reset password on next login](http://tumy-tech.com/2015/08/23/openam-forcing-user-to-reset-password-on-next-login-2/)*
+6. Enable OAuth service in AM, Enable "auth module messages for Password Credentials Grant" under OAuth2 Provider advanced tab.
+7. Enable "force-change-on-reset" feature in DJ as explained here: *[Forcing users to reset password on next login](http://tumy-tech.com/2015/08/23/openam-forcing-user-to-reset-password-on-next-login-2/)*
   
 Testing:
 ======== 
