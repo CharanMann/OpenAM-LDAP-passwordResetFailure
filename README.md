@@ -1,7 +1,7 @@
 # OpenAM-LDAP-passwordResetFailure
 
 * OpenAM LDAP Extensions - OpenAM Custom Auth Module for returning specific error message for password reset scenario in ROPC grant <br />
-* By default AM returns "Internal Server Error", related RFE: OPENAM-11517. 
+* By default AM returns "Internal Server Error", related RFE: *[OPENAM-11517](https://bugster.forgerock.org/jira/browse/OPENAM-11517)*. 
  
 Disclaimer of Liability :
 =========================
