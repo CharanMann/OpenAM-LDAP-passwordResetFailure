@@ -435,13 +435,5 @@
                 </SubSchema>
             </Organization>
         </Schema>
-        <Configuration>
-            <OrganizationConfiguration name="/">
-                <AttributeValuePair>
-                    <Attribute name="iplanet-am-auth-ldap-bind-passwd"/>
-                    <Value>@UM_DS_DIRMGRPASSWD@</Value>
-                </AttributeValuePair>
-            </OrganizationConfiguration>
-        </Configuration>
     </Service>
 </ServicesConfiguration>
