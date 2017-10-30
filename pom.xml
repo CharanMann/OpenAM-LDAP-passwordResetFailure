@@ -33,11 +33,11 @@
 
     <groupId>org.forgerock.openam.examples</groupId>
     <artifactId>openam-ldap-passwordResetFailure</artifactId>
-    <version>1.0.0</version>
+    <version>${openam.version}</version>
     <packaging>jar</packaging>
 
     <properties>
-        <openam.version>14.1.0</openam.version>
+        <openam.version>14.1.1</openam.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
