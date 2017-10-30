@@ -23,30 +23,19 @@ action taken by you or others related to the code.
     
 Pre-requisites :
 ================
-* Versions used for this project: AM 5.1, DJ 5 
+* Versions used for this project: AM 5.5.1, DJ 5 
 1. AM has been installed and configured.
 2. Maven has been installed and configured.
 
 AM Configuration:
 =====================
 1. Build the custom auth module by using maven. 
-2. Deploy the custom auth module. Refer instructions: *[Building and Installing Custom Authentication Modules](https://backstage.forgerock.com/docs/am/5.1/authentication-guide/#build-config-sample-auth-module)*
-3. Create service and register module:
-```
-Register service and module:
-$ ./ssoadm create-svc --adminid amadmin --password-file /tmp/pwd.txt --xmlfile ~/softwares/amAuthLDAPExt.xml
-$ ./ssoadm register-auth-module --adminid amadmin --password-file /tmp/pwd.txt --authmodule com.sun.identity.authentication.modules.ldap.LDAPExt
-
-UnRegister service and module (in case module needs to be uninstalled) : 
-$ ./ssoadm unregister-auth-module --adminid amadmin --password-file /tmp/pwd.txt --authmodule com.sun.identity.authentication.modules.ldap.LDAPExt
-$ ./ssoadm delete-svc --adminid amadmin --password-file /tmp/pwd.txt -s iPlanetAMAuthLDAPExtService
-```
-4. Restart AM. 
-5. Configure the custom auth module. Refer instructions: *[Configuring and Testing Custom Authentication Modules](https://backstage.forgerock.com/docs/am/5.1/authentication-guide/#configuring-testing-sample-auth-module)*
-6. Configure LDAPExt module with required parameters.
-7. Create a chain(ldapExt) with (LDAPExt:Required).
-8. Enable OAuth service in AM, Enable "auth module messages for Password Credentials Grant" under OAuth2 Provider advanced tab.
-9. Enable "force-change-on-reset" feature in DJ as explained here: *[Forcing users to reset password on next login](http://tumy-tech.com/2015/08/23/openam-forcing-user-to-reset-password-on-next-login-2/)*
+2. Copy the custom authentication module openam-ldap-passwordResetFailure-1.0.0.jar.jar file to WEB-INF/lib/ where AM is deployed. Refer instructions: *[Building and Installing Custom Authentication Modules](https://backstage.forgerock.com/docs/am/5.5/authentication-guide/#build-config-sample-auth-module)*
+3. Restart AM. 
+4. Configure LDAPExt module with required parameters. Refer instructions: *[Configuring and Testing Custom Authentication Modules](https://backstage.forgerock.com/docs/am/5.5/authentication-guide/#configuring-testing-sample-auth-module)*
+5. Create a chain(ldapExt) with (LDAPExt:Required).
+6. Enable OAuth service in AM, Enable "auth module messages for Password Credentials Grant" under OAuth2 Provider advanced tab.
+7. Enable "force-change-on-reset" feature in DJ as explained here: *[Forcing users to reset password on next login](http://tumy-tech.com/2015/08/23/openam-forcing-user-to-reset-password-on-next-login-2/)*
   
 Testing:
 ======== 
@@ -55,7 +44,7 @@ Testing:
 2. Test ROPC grant flow for ldapExt chain
 ```
 curl -X POST \
-  http://openam51.example.com:8282/openam/oauth2/employees/access_token \
+  http://openam551.example.com:8989/openam/oauth2/employees/access_token \
   -H 'authorization: BASIC bXlPQXV0aDJDbGllbnQ6cGFzc3dvcmQ=' \
   -H 'content-type: application/x-www-form-urlencoded' \
   -d 'grant_type=password&username=testuser1&password=password&scope=openid%20profile%20email&auth_chain=ldapExt'
